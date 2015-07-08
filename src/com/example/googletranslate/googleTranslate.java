@@ -17,6 +17,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.widget.TextView;
 
 public class googleTranslate {
@@ -24,6 +25,7 @@ public class googleTranslate {
 	static Activity mActivity;
 	static TextView mTextView;
 	static String result = "";
+	private String voiceLanguage;
 	
 	public googleTranslate(Activity activity, TextView textView){
 		mActivity = activity;
@@ -33,6 +35,8 @@ public class googleTranslate {
 	
 	public String callGoogleTranslate(final String fromLanguage,
 			final String toLanguage, final String textToTranslate) {
+		
+		voiceLanguage = toLanguage;
 		
 		 new Thread(new Runnable() {
 			    public void run() {
@@ -95,7 +99,6 @@ public class googleTranslate {
 			Message txtmsg = new Message();
 			txtmsg = myHandler.obtainMessage(0,txtTraducido);
 			myHandler.sendMessage(txtmsg);   
-			
 			playGoogleVoice(txtTraducido);
 
 			return txtTraducido;
@@ -113,7 +116,8 @@ public class googleTranslate {
 		try {
 		    MediaPlayer player = new MediaPlayer();
 		    player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-		    player.setDataSource("http://translate.google.com/translate_tts?ie=utf-8&tl=zh-TW&q=" + mString);
+		    
+		    player.setDataSource("http://translate.google.com/translate_tts?ie=utf-8&tl=" + voiceLanguage + "&q=" + mString.replaceAll(" ", "%20"));
 		    player.prepare();
 		    player.start();
 

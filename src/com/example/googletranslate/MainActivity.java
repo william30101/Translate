@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.View;
@@ -14,13 +16,16 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
+	private String TAG = "Translate";
 	static String result = "";
 	final String tag = "Prueba";
 	TextView outtxt;
 	
 	/* Speech parameter */
 	private speech2Text speech;
-	private googleTranslate translate;
+	private static googleTranslate translate;
+	private languageDetection detection;
+	private static String txtquery;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -32,6 +37,7 @@ public class MainActivity extends Activity {
 		outtxt = (TextView) findViewById(R.id.OutputText);
 
 		speech = new speech2Text(this);
+		detection = new languageDetection();
 		translate = new googleTranslate(this, outtxt);
 		
 		final Button btnSearch = (Button) findViewById(R.id.TranslateButton);
@@ -57,13 +63,48 @@ public class MainActivity extends Activity {
 
           //display results.
           logthis("results: "+String.valueOf(matches.size())); 
-          String txtquery = matches.get(0);
-          translate.callGoogleTranslate("en", "zh-TW", txtquery);
+          txtquery = matches.get(0);
+          // Add Language Detection here , for two-way translate
+          detection.languageDetect(txtquery);
+         
+          //translate.callGoogleTranslate("en", "zh-TW", txtquery);
           
         }
 
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+    /*
+     *  Register hanlder for language detect.
+     * 
+     * */
+	public Handler languageHandler = new Handler() {
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case 0:
+				String detectLanguage = ((String) msg.obj);
+				Log.i(TAG, "detect language -> " + detectLanguage);
+				
+				/*
+				 * Translate from source language to destination language
+				 * When we detect language source.
+				 * */
+				
+				if (detectLanguage != null)
+				{
+					if (detectLanguage.equals("en"))
+						translate.callGoogleTranslate("en", "zh-CN", txtquery);
+					else if (detectLanguage.equals("zh-CN"))
+						translate.callGoogleTranslate("zh-CN", "en", txtquery);
+					else if (detectLanguage.equals("ja"))
+						translate.callGoogleTranslate("ja", "en", txtquery);
+				}
+				break;
+			}
+			super.handleMessage(msg);
+		}
+	};
+	
     
 	/*
 	 * simple method to add the log TextView.
