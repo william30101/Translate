@@ -16,31 +16,37 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
+	private String tag = "Prueba";
 	private String TAG = "Translate";
 	static String result = "";
-	final String tag = "Prueba";
-	TextView outtxt;
 	
 	/* Speech parameter */
 	private speech2Text speech;
 	private static googleTranslate translate;
 	private languageDetection detection;
 	private static String txtquery;
-
+	private languageSpinner mSpinner;
+	
+	private Button btnSearch;
+	private EditText txtSearch;
+	TextView outtxt;
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		final EditText txtSearch = (EditText) findViewById(R.id.InputText);
+		txtSearch = (EditText) findViewById(R.id.InputText);
 		outtxt = (TextView) findViewById(R.id.OutputText);
-
+		btnSearch = (Button) findViewById(R.id.TranslateButton);
+		
 		speech = new speech2Text(this);
 		detection = new languageDetection();
 		translate = new googleTranslate(this, outtxt);
+		mSpinner = new languageSpinner(this);
 		
-		final Button btnSearch = (Button) findViewById(R.id.TranslateButton);
+		
 		btnSearch.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 
@@ -51,9 +57,7 @@ public class MainActivity extends Activity {
 
 	} // end onCreate()
 	
-    /**
-     * Handle the results from the recognition activity.
-     */
+    /** Handle the results from the recognition activity.*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == speech.VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
@@ -65,7 +69,7 @@ public class MainActivity extends Activity {
           logthis("results: "+String.valueOf(matches.size())); 
           txtquery = matches.get(0);
           // Add Language Detection here , for two-way translate
-          detection.languageDetect(txtquery);
+          sendHandlerMsg(mSpinner.detectlanguage, mSpinner.translanguage);
          
           //translate.callGoogleTranslate("en", "zh-TW", txtquery);
           
@@ -74,10 +78,7 @@ public class MainActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    /*
-     *  Register hanlder for language detect.
-     * 
-     * */
+    /**  Register hanlder for language detect. */
 	public Handler languageHandler = new Handler() {
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
@@ -106,14 +107,21 @@ public class MainActivity extends Activity {
 	};
 	
     
-	/*
-	 * simple method to add the log TextView.
-	 */
+	/** simple method to add the log TextView.*/
 	public void logthis (String newinfo) {
 		if (newinfo != "") {
 			outtxt.setText(outtxt.getText() + "\n" + newinfo);
 		}
 	}
     
+	private void sendHandlerMsg(String srcLanguage, String toLanguage){
+		Message txtmsg = new Message();
+		String[] temp = new String[10];
+		temp[0] = srcLanguage;
+		temp[1] = toLanguage;
+		
+		txtmsg = languageHandler.obtainMessage(0, temp);
+		languageHandler.sendMessage(txtmsg);   
+	}
 
 }

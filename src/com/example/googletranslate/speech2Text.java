@@ -7,13 +7,19 @@ import android.util.Log;
 
 public class speech2Text {
 
-	static Activity globalActivity;
+	private static speech2Text mClass;
+	private static Activity mActivity;
 	
 	protected static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 	protected static final String TAG = "VoiceRecognition";
 	
 	public speech2Text(Activity activity){
-		globalActivity = activity;
+		mActivity = activity;
+		mClass = this;
+	}
+	
+	public static speech2Text getInstance(){
+		return mClass;
 	}
 	
     /**
@@ -37,7 +43,7 @@ public class speech2Text {
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
 
         Log.i(TAG,"Calling the Voice Intenet");
-        globalActivity.startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+        mActivity.startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
     }
 	
 	
