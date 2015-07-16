@@ -13,17 +13,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity{
 
-	private String tag = "Prueba";
 	private String TAG = "Translate";
 	static String result = "";
 	
 	/* Speech parameter */
 	private speech2Text speech;
 	private static googleTranslate translate;
-	private languageDetection detection;
 	private static String txtquery;
 	private languageSpinner mSpinner;
 	
@@ -36,25 +35,20 @@ public class MainActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		
 		txtSearch = (EditText) findViewById(R.id.InputText);
 		outtxt = (TextView) findViewById(R.id.OutputText);
 		btnSearch = (Button) findViewById(R.id.TranslateButton);
 		
 		speech = new speech2Text(this);
-		detection = new languageDetection();
 		translate = new googleTranslate(this, outtxt);
 		mSpinner = new languageSpinner(this);
+
+		
+		/* Method 1 */
+		btnSearch.setOnClickListener(mOnClickListener);
 		
 		
-		btnSearch.setOnClickListener(new Button.OnClickListener() {
-			public void onClick(View v) {
-
-				speech.startVoiceRecognitionActivity();
-
-			}
-		});
-
 	} // end onCreate()
 	
     /** Handle the results from the recognition activity.*/
@@ -68,11 +62,10 @@ public class MainActivity extends Activity {
           //display results.
           logthis("results: "+String.valueOf(matches.size())); 
           txtquery = matches.get(0);
+         
           // Add Language Detection here , for two-way translate
           sendHandlerMsg(mSpinner.detectlanguage, mSpinner.translanguage);
          
-          //translate.callGoogleTranslate("en", "zh-TW", txtquery);
-          
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -83,29 +76,28 @@ public class MainActivity extends Activity {
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case 0:
-				String detectLanguage = ((String) msg.obj);
-				Log.i(TAG, "detect language -> " + detectLanguage);
+				String[] detectLanguage = ((String[]) msg.obj);
+				
+				String fromLanguage = detectLanguage[0];
+				String toLanguage = detectLanguage[1];
+				
+				Log.i(TAG, "detect language -> " + fromLanguage + " toLanguage -> " +toLanguage);
 				
 				/*
 				 * Translate from source language to destination language
 				 * When we detect language source.
 				 * */
 				
-				if (detectLanguage != null)
-				{
-					if (detectLanguage.equals("en"))
-						translate.callGoogleTranslate("en", "zh-CN", txtquery);
-					else if (detectLanguage.equals("zh-CN"))
-						translate.callGoogleTranslate("zh-CN", "en", txtquery);
-					else if (detectLanguage.equals("ja"))
-						translate.callGoogleTranslate("ja", "en", txtquery);
+				if (detectLanguage != null){
+				    txtSearch.setText(txtquery);
+					translate.callGoogleTranslate(fromLanguage, toLanguage, txtquery);
 				}
+				
 				break;
 			}
 			super.handleMessage(msg);
 		}
 	};
-	
     
 	/** simple method to add the log TextView.*/
 	public void logthis (String newinfo) {
@@ -123,5 +115,20 @@ public class MainActivity extends Activity {
 		txtmsg = languageHandler.obtainMessage(0, temp);
 		languageHandler.sendMessage(txtmsg);   
 	}
+	
+	private Button.OnClickListener mOnClickListener = new Button.OnClickListener(){
 
+		@Override
+		public void onClick(View v) {
+			
+			if(mSpinner.detectlanguage != mSpinner.translanguage){
+				speech.startVoiceRecognitionActivity();
+			}else if(mSpinner.detectlanguage == mSpinner.translanguage){
+				Toast.makeText(MainActivity.this, "Please reselect detect & translated language.", Toast.LENGTH_SHORT).show();
+			}
+
+		}
+		
+	};
+	
 }

@@ -1,5 +1,7 @@
 package com.example.googletranslate;
 
+import java.util.Locale;
+
 import android.app.Activity;
 import android.content.Context;
 import android.view.View;
@@ -19,12 +21,10 @@ public class languageSpinner{
 
 	public String detectlanguage;
 	public String translanguage;
-	
-	private String[] languageItem = new String[] { "ENG", "zh-TW", "JPN", "KOR"};
+	private String[] languageItem = new String[] { "ENG", "zh-TW", "JPN", "KOR", "FRA"};
 	private ArrayAdapter<String> listAdapter;
 	
 	private speech2Text speech;
-	
 	
 	protected languageSpinner(Activity activity){
 		mActivity = activity;
@@ -78,23 +78,28 @@ public class languageSpinner{
 		switch(itor){
 		case 0:
 			Toast.makeText(mContext, "Detect language: ENG", Toast.LENGTH_SHORT).show();
-			speech.setRecognitionLanguage("en-US");
+			speech.setRecognition(Locale.US.toString());
 			detectlanguage = "en";
 			break;
 		case 1:
 			Toast.makeText(mContext, "Detect language: zh-TW", Toast.LENGTH_SHORT).show();
-			speech.setRecognitionLanguage("zh-CN");
+			speech.setRecognition(Locale.TAIWAN.toString());
 			detectlanguage = "zh-CN";
 			break;
 		case 2:
 			Toast.makeText(mContext, "Detect language: JPN", Toast.LENGTH_SHORT).show();
-			speech.setRecognitionLanguage("ja-JP");
+			speech.setRecognition(Locale.JAPAN.toString());
 			detectlanguage = "ja";
 			break;
 		case 3:
 			Toast.makeText(mContext, "Detect language: KOR", Toast.LENGTH_SHORT).show();
-			speech.setRecognitionLanguage("ko-KR");
+			speech.setRecognition(Locale.KOREA.toString());
 			detectlanguage = "ko";
+			break;
+		case 4:
+			Toast.makeText(mContext, "Detect language: FRA", Toast.LENGTH_SHORT).show();
+			speech.setRecognition(Locale.FRENCH.toString());
+			detectlanguage = "fr";
 			break;
 		default:
 			break;
@@ -119,6 +124,10 @@ public class languageSpinner{
 		case 3:
 			Toast.makeText(mContext, "Translate language: KOR", Toast.LENGTH_SHORT).show();
 			translanguage = "ko";
+			break;
+		case 4:
+			Toast.makeText(mContext, "Translate language: FRA", Toast.LENGTH_SHORT).show();
+			translanguage = "fr";
 			break;
 		default:
 			break;

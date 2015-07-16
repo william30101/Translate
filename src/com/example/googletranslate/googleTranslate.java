@@ -41,7 +41,7 @@ public class googleTranslate {
 		 new Thread(new Runnable() {
 			    public void run() {
 		
-		String yourKey = "Your Key";
+		String yourKey = "";
 		String result = null;
 		String URL  = "https://www.googleapis.com/language/translate/v2";
 		String key = "?key=" + yourKey;
