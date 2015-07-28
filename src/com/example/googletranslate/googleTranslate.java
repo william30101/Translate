@@ -23,13 +23,15 @@ import android.widget.TextView;
 public class googleTranslate {
 
 	static Activity mActivity;
+	private MainActivity mMainActivity;
 	static TextView mTextView;
 	static String result = "";
 	private String voiceLanguage;
 	
-	public googleTranslate(Activity activity, TextView textView){
+	public googleTranslate(Activity activity, TextView textView, MainActivity mainActivity){
 		mActivity = activity;
 		mTextView = textView;
+		mMainActivity = mainActivity;
 	}
 	
 	
@@ -100,6 +102,8 @@ public class googleTranslate {
 			txtmsg = myHandler.obtainMessage(0,txtTraducido);
 			myHandler.sendMessage(txtmsg);   
 			playGoogleVoice(txtTraducido);
+			
+			
 
 			return txtTraducido;
 
@@ -114,13 +118,16 @@ public class googleTranslate {
 	private void playGoogleVoice(String mString){
 		
 		try {
+			
+			mMainActivity.speakOut(mString);
+			/*
 		    MediaPlayer player = new MediaPlayer();
 		    player.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		    
 		    player.setDataSource("http://translate.google.com/translate_tts?ie=utf-8&tl=" + voiceLanguage + "&q=" + mString.replaceAll(" ", "%20"));
 		    player.prepare();
 		    player.start();
-
+*/
 		} catch (Exception e) {
 		    // TODO: handle exception
 		}
