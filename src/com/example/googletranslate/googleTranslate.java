@@ -13,61 +13,54 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.widget.TextView;
 
 public class googleTranslate {
 
-	static Activity mActivity;
-	private MainActivity mMainActivity;
+	private static Activity mActivity;
 	static TextView mTextView;
 	static String result = "";
-	private String voiceLanguage;
 	
-	public googleTranslate(Activity activity, TextView textView, MainActivity mainActivity){
+	private text2Speech mText2Speech;
+	
+	public googleTranslate(Activity activity, TextView textView, text2Speech mtext2Speech){
 		mActivity = activity;
 		mTextView = textView;
-		mMainActivity = mainActivity;
+		mText2Speech = mtext2Speech;
 	}
 	
-	
-	public String callGoogleTranslate(final String fromLanguage,
-			final String toLanguage, final String textToTranslate) {
-		
-		voiceLanguage = toLanguage;
+	public String callGoogleTranslate(final String fromLanguage, final String toLanguage, final String textToTranslate) {
 		
 		 new Thread(new Runnable() {
 			    public void run() {
 		
-		String yourKey = "";
-		String result = null;
-		String URL  = "https://www.googleapis.com/language/translate/v2";
-		String key = "?key=" + yourKey;
-		String sourceParam = "&source=" + fromLanguage;
-		String toParam = "&target=" + toLanguage;
-		String textParam = "&q=" + textToTranslate.replaceAll(" ", "%20");
-		String fullURL = URL + key + sourceParam + toParam + textParam;
-		System.out.println(fullURL);
-
-		HttpClient httpClient = new DefaultHttpClient();
-		HttpGet del = new HttpGet(fullURL);
-		HttpResponse resp;
-
-		
-		try {
-			resp = httpClient.execute(del);
-			String respStr = EntityUtils.toString(resp.getEntity());
-			// Parse Result http
-			proccesResult(respStr);
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+					String yourKey = "";
+					String result = null;
+					String URL  = "https://www.googleapis.com/language/translate/v2";
+					String key = "?key=" + yourKey;
+					String sourceParam = "&source=" + fromLanguage;
+					String toParam = "&target=" + toLanguage;
+					String textParam = "&q=" + textToTranslate.replaceAll(" ", "%20");
+					String fullURL = URL + key + sourceParam + toParam + textParam;
+					System.out.println(fullURL);
+			
+					HttpClient httpClient = new DefaultHttpClient();
+					HttpGet del = new HttpGet(fullURL);
+					HttpResponse resp;
+			
+					
+					try {
+						resp = httpClient.execute(del);
+						String respStr = EntityUtils.toString(resp.getEntity());
+						// Parse Result http
+						proccesResult(respStr);
+					} catch (ClientProtocolException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 
 			    }
 		  }).start();
@@ -118,25 +111,11 @@ public class googleTranslate {
 	private void playGoogleVoice(String mString){
 		
 		try {
-			
-			mMainActivity.speakOut(mString);
-			/*
-		    MediaPlayer player = new MediaPlayer();
-		    player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-		    
-		    player.setDataSource("http://translate.google.com/translate_tts?ie=utf-8&tl=" + voiceLanguage + "&q=" + mString.replaceAll(" ", "%20"));
-		    player.prepare();
-		    player.start();
-*/
+			mText2Speech.speakOut(mString);
 		} catch (Exception e) {
 		    // TODO: handle exception
 		}
 		
 	}
-	
-	
-	
-	
-	
 	
 }

@@ -19,9 +19,9 @@ public class languageSpinner{
 	private Spinner detectInput = null;
 	private Spinner transOutput = null;
 
-	public String detectlanguage;
-	public String translanguage;
-	private String[] languageItem = new String[] { "ENG", "zh-TW", "JPN", "KOR", "FRA"};
+	private String detectlanguage;
+	private String translanguage;
+	private String[] languageItem = new String[] { "ENG", "zh-TW", "JPN", "KOR", "FRA", "Thai"};
 	private ArrayAdapter<String> listAdapter;
 	
 	private speech2Text speech;
@@ -30,9 +30,9 @@ public class languageSpinner{
 		mActivity = activity;
 		mContext = mActivity.getApplicationContext();
 		speech = speech2Text.getInstance();
+		
 		declareSpinner();
 	}
-	
 	
 	private void declareSpinner(){
 		
@@ -44,6 +44,7 @@ public class languageSpinner{
 		detectInput.setAdapter(listAdapter);
 		//transOutput.setSelection(0); //Default value at 0 position
 		detectInput.setOnItemSelectedListener(selectListener);
+		
 		
 		/* Translate output Language */
 		transOutput = (Spinner) mActivity.findViewById(R.id.spinnerTran);
@@ -101,6 +102,11 @@ public class languageSpinner{
 			speech.setRecognition(Locale.FRENCH.toString());
 			detectlanguage = "fr";
 			break;
+		case 5:
+			Toast.makeText(mContext, "Detect language: Thai", Toast.LENGTH_SHORT).show();
+			speech.setRecognition("th");
+			detectlanguage = "th";
+			break;
 		default:
 			break;
 		}
@@ -129,9 +135,21 @@ public class languageSpinner{
 			Toast.makeText(mContext, "Translate language: FRA", Toast.LENGTH_SHORT).show();
 			translanguage = "fr";
 			break;
+		case 5:
+			Toast.makeText(mContext, "Translate language: Thai", Toast.LENGTH_SHORT).show();
+			translanguage = "th";
+			break;
 		default:
 			break;
 		}
+	}
+	
+	public String getDetectlanguage() {
+		return detectlanguage;
+	}
+	
+	public String getTranslanguage() {
+		return translanguage;
 	}
 	
 }

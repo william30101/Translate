@@ -18,7 +18,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements TextToSpeech.OnInitListener{
+public class MainActivity extends Activity{
 
 	private String TAG = "Translate";
 	static String result = "";
@@ -32,8 +32,9 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 	private Button btnSearch;
 	private EditText txtSearch;
 	TextView outtxt;
-	private TextToSpeech myTTS;
+	
 	private int MY_DATA_CHECK_CODE = 0;
+	private text2Speech mText2Speech;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -46,20 +47,12 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 		btnSearch = (Button) findViewById(R.id.TranslateButton);
 		
 		speech = new speech2Text(this);
-		translate = new googleTranslate(this, outtxt,this);
 		mSpinner = new languageSpinner(this);
-
+		mText2Speech = new text2Speech(this, mSpinner);
+		translate = new googleTranslate(this, outtxt, mText2Speech);
 		
 		/* Method 1 */
 		btnSearch.setOnClickListener(mOnClickListener);
-		
-	    /*Add start*/
-	    Intent checkTTSIntent = new Intent();
-	    checkTTSIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-	    startActivityForResult(checkTTSIntent, MY_DATA_CHECK_CODE);
-	    /*Add end*/
-
-		
 		
 	} // end onCreate()
 	
@@ -76,18 +69,16 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
           txtquery = matches.get(0);
          
           // Add Language Detection here , for two-way translate
-          sendHandlerMsg(mSpinner.detectlanguage, mSpinner.translanguage);
+          sendHandlerMsg(mSpinner.getDetectlanguage(), mSpinner.getTranslanguage());
          
         }
         
         if (requestCode == MY_DATA_CHECK_CODE) {
-            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {      
-                myTTS = new TextToSpeech(this, this);
+            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {     
+            	mText2Speech.initializeTTSEngine();
             }
             else {
-                Intent installTTSIntent = new Intent();
-                installTTSIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-                startActivity(installTTSIntent);
+            	mText2Speech.installTTSEngine();
             }
           }
 
@@ -113,7 +104,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 				
 				if (detectLanguage != null){
 				    txtSearch.setText(txtquery);
-				    settingInitLanguage();
+				    mText2Speech.initializeTTSLanguage();
 					translate.callGoogleTranslate(fromLanguage, toLanguage, txtquery);
 				}
 				
@@ -145,77 +136,15 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 		@Override
 		public void onClick(View v) {
 			
-			if(mSpinner.detectlanguage != mSpinner.translanguage){
+			if(mSpinner.getDetectlanguage() != mSpinner.getTranslanguage()){
 				speech.startVoiceRecognitionActivity();
-			}else if(mSpinner.detectlanguage == mSpinner.translanguage){
+				
+			}else if(mSpinner.getDetectlanguage() == mSpinner.getTranslanguage()){
 				Toast.makeText(MainActivity.this, "Please reselect detect & translated language.", Toast.LENGTH_SHORT).show();
 			}
 
 		}
 		
 	};
-	
-	
-	@Override
-    public void onInit(int status) {
- 
-		Locale language = Locale.ENGLISH;
-        if (status == TextToSpeech.SUCCESS) {
-        	if (mSpinner.translanguage.toLowerCase().contains("zh"))
-        		language = Locale.CHINESE;
-        	else if (mSpinner.translanguage.toLowerCase().contains("en"))
-        		language = Locale.ENGLISH;
-        	else if (mSpinner.translanguage.toLowerCase().contains("jpn"))
-        		language = Locale.JAPAN;
-        	else if (mSpinner.translanguage.toLowerCase().contains("kor"))
-        		language = Locale.KOREA;
-        	else if (mSpinner.translanguage.toLowerCase().contains("fra"))
-        		language = Locale.FRANCE;
-        	
-            int result =  myTTS.setLanguage(language);
- 
-            if (result == TextToSpeech.LANG_MISSING_DATA
-                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
-            } else {
-               // speakOut();
-            }
- 
-        } else {
-            Log.e("TTS", "Initilization Failed!");
-        }
- 
-    }
-	
-	public void settingInitLanguage()
-	{
-		Locale language = Locale.ENGLISH;
-		if (mSpinner.translanguage.toLowerCase().contains("zh"))
-    		language = Locale.CHINESE;
-    	else if (mSpinner.translanguage.toLowerCase().contains("en"))
-    		language = Locale.ENGLISH;
-    	else if (mSpinner.translanguage.toLowerCase().contains("ja"))
-    		language = Locale.JAPAN;
-    	else if (mSpinner.translanguage.toLowerCase().contains("ko"))
-    		language = Locale.KOREA;
-    	else if (mSpinner.translanguage.toLowerCase().contains("fr"))
-    		language = Locale.FRANCE;
-		
-        int result =  myTTS.setLanguage(language);
-
-        if (result == TextToSpeech.LANG_MISSING_DATA
-                || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-            Log.e("TTS", "This Language is not supported");
-        } else {
-           // speakOut();
-        }
-	}
- 
-    public void speakOut(String text) {
- 
-      //  String text = txtText.getText().toString();
- 
-    	myTTS.speak(text, TextToSpeech.QUEUE_FLUSH,null);
-    }
 	
 }

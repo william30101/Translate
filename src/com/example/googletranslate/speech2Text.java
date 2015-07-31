@@ -21,7 +21,6 @@ public class speech2Text implements RecognitionListener{
 	protected static final String TAG = "VoiceRecognition";
 	private String detectLanguage;
 	
-	
 	private Context mContext;
 	private SpeechRecognizer mSpeechRecognizer;
 	
@@ -46,17 +45,17 @@ public class speech2Text implements RecognitionListener{
 
         // Specify the calling package to identify your application
         intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass().getPackage().getName());
-
-        // Display an hint to the user about what he should say.
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say Something!");
-
+     
         // Given an hint to the recognizer about what the user is going to say
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        //intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
         
         // Octocat 0713 add: Set detect language
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, detectLanguage);
         Log.i(TAG, "trans -->" + detectLanguage);
+        
+        // Display an hint to the user about what he should say.
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say Something!");
         
         // Specify how many results you want to receive. The results will be sorted
         // where the first result is the one with higher confidence.
