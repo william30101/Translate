@@ -7,7 +7,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:layout_below="@+id/toplayout" >
 
         <EditText
             android:id="@+id/InputText"
@@ -25,29 +26,47 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/toplayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" 
-        android:layout_alignParentBottom="true" >
+         >
 
         <Spinner
-            android:id="@+id/spinnerDetect"
+            android:id="@+id/spinnerlanguage1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-        <Button
-            android:id="@+id/TranslateButton"
+        <Spinner
+            android:id="@+id/spinnerlanguage2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/buttonlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+        
+           <Button
+            android:id="@+id/btnlanguage1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Translate" />
-
-        <Spinner
-            android:id="@+id/spinnerTran"
+            android:text="Translate1" />
+           
+            <Button
+            android:id="@+id/btnlanguage2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
+            android:layout_weight="1"
+            android:text="Translate2" />
+        
+        
     </LinearLayout>
 
 </RelativeLayout>

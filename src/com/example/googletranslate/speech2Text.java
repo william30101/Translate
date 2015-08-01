@@ -70,8 +70,10 @@ public class speech2Text implements RecognitionListener{
         //mSpeechRecognizer.startListening(intent);
     }
 	
-	protected void setRecognition(String language){
-			detectLanguage = language;
+	
+	/** RecognitionListener */
+	protected void setRecognition(String language) {
+		detectLanguage = language;
 	}
 
 	@Override

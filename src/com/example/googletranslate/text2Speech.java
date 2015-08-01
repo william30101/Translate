@@ -15,16 +15,13 @@ public class text2Speech implements TextToSpeech.OnInitListener{
 	private MainActivity mMainActivity;
 	private Context mContext;
 	
-	private languageSpinner mSpinner;
-	
 	private TextToSpeech myTTS;
 	private Locale mlanguage = Locale.ENGLISH;
 	private int MY_DATA_CHECK_CODE = 0;
 	
-	public text2Speech(MainActivity activity,languageSpinner spinner){
+	public text2Speech(MainActivity activity){
 		mMainActivity = activity;
 		mContext = mMainActivity.getApplicationContext();
-		mSpinner = spinner;
 		
 		checkTTSEngine();
 	}
@@ -69,17 +66,17 @@ public class text2Speech implements TextToSpeech.OnInitListener{
 	
 	public void initializeTTSLanguage(){
 		
-		if (mSpinner.getTranslanguage().toLowerCase().contains("zh"))
-			mlanguage = Locale.CHINESE;
-    	else if (mSpinner.getTranslanguage().toLowerCase().contains("en"))
+		if (mMainActivity.getTransLanguage().toLowerCase().contains("zh"))
+			mlanguage = Locale.TAIWAN;
+    	else if (mMainActivity.getTransLanguage().toLowerCase().contains("en"))
     		mlanguage = Locale.ENGLISH;
-    	else if (mSpinner.getTranslanguage().toLowerCase().contains("ja"))
+    	else if (mMainActivity.getTransLanguage().toLowerCase().contains("ja"))
     		mlanguage = Locale.JAPAN;
-    	else if (mSpinner.getTranslanguage().toLowerCase().contains("ko"))
+    	else if (mMainActivity.getTransLanguage().toLowerCase().contains("ko"))
     		mlanguage = Locale.KOREA;
-    	else if (mSpinner.getTranslanguage().toLowerCase().contains("fr"))
+    	else if (mMainActivity.getTransLanguage().toLowerCase().contains("fr"))
     		mlanguage = Locale.FRANCE;
-    	else if (mSpinner.getTranslanguage().toLowerCase().contains("th"))
+    	else if (mMainActivity.getTransLanguage().toLowerCase().contains("th"))
     		mlanguage = new Locale("th_TH");
 		
         int result =  myTTS.setLanguage(mlanguage);

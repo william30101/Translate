@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import android.speech.tts.TextToSpeech;
-
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.speech.RecognizerIntent;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,13 +30,16 @@ public class MainActivity extends Activity{
 	private static String txtquery;
 	private languageSpinner mSpinner;
 	
-	private Button btnSearch;
 	private EditText txtSearch;
 	TextView outtxt;
 	
 	private int MY_DATA_CHECK_CODE = 0;
 	private text2Speech mText2Speech;
 	
+	/* New function */
+	private Button btnlanguage1, btnlanguage2;
+	private String detectlanguage, transLanguage ="zh";
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -44,15 +48,19 @@ public class MainActivity extends Activity{
 		
 		txtSearch = (EditText) findViewById(R.id.InputText);
 		outtxt = (TextView) findViewById(R.id.OutputText);
-		btnSearch = (Button) findViewById(R.id.TranslateButton);
 		
 		speech = new speech2Text(this);
 		mSpinner = new languageSpinner(this);
-		mText2Speech = new text2Speech(this, mSpinner);
+		mText2Speech = new text2Speech(this);
 		translate = new googleTranslate(this, outtxt, mText2Speech);
 		
 		/* Method 1 */
-		btnSearch.setOnClickListener(mOnClickListener);
+		btnlanguage1 = (Button) findViewById(R.id.btnlanguage1);
+		btnlanguage2 = (Button) findViewById(R.id.btnlanguage2);
+		mSpinner.setBtn(btnlanguage1, btnlanguage2);
+		btnlanguage1.setOnTouchListener(mOnTouchListener);
+		btnlanguage2.setOnTouchListener(mOnTouchListener);
+		
 		
 	} // end onCreate()
 	
@@ -65,11 +73,12 @@ public class MainActivity extends Activity{
           ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 
           //display results.
-          logthis("results: "+String.valueOf(matches.size())); 
+          //logthis("results: "+String.valueOf(matches.size())); 
           txtquery = matches.get(0);
          
           // Add Language Detection here , for two-way translate
-          sendHandlerMsg(mSpinner.getDetectlanguage(), mSpinner.getTranslanguage());
+          //sendHandlerMsg(mSpinner.getDetectlanguage(), mSpinner.getTranslanguage());
+          sendHandlerMsg(detectlanguage, transLanguage);
          
         }
         
@@ -131,20 +140,60 @@ public class MainActivity extends Activity{
 		languageHandler.sendMessage(txtmsg);   
 	}
 	
-	private Button.OnClickListener mOnClickListener = new Button.OnClickListener(){
+	/* Button change color of backgound */
+	private Button.OnTouchListener mOnTouchListener = new Button.OnTouchListener(){
 
-		@Override
-		public void onClick(View v) {
+		public boolean onTouch(View v, MotionEvent event) {
 			
-			if(mSpinner.getDetectlanguage() != mSpinner.getTranslanguage()){
-				speech.startVoiceRecognitionActivity();
-				
-			}else if(mSpinner.getDetectlanguage() == mSpinner.getTranslanguage()){
-				Toast.makeText(MainActivity.this, "Please reselect detect & translated language.", Toast.LENGTH_SHORT).show();
-			}
+			int selectItor = v.getId();
+			Log.i("shinhua", "touch id:"+ v.getId());
+			
+			switch (selectItor) {
+			case R.id.btnlanguage1:
+				detectlanguage = mSpinner.getSpinnerLanguage1();
+				transLanguage = mSpinner.getSpinnerLanguage2();
+				speech.setRecognition(mSpinner.chooseLocale(detectlanguage));
+				translateButtonAction(event.getAction(), btnlanguage1);
+				break;
+			case R.id.btnlanguage2:
+				detectlanguage = mSpinner.getSpinnerLanguage2();
+				transLanguage = mSpinner.getSpinnerLanguage1();
+				speech.setRecognition(mSpinner.chooseLocale(detectlanguage));
+				translateButtonAction(event.getAction(), btnlanguage2);
+				break;
+			default:
+				break;
 
+			}
+			
+			return false;
 		}
 		
 	};
 	
+	
+	private void translateButtonAction(int mAction, Button mTransButton){
+		
+		if (mAction == MotionEvent.ACTION_DOWN) {
+			mTransButton.setBackgroundColor(Color.BLUE);
+			judgeLanguageIdentical();
+		} else if (mAction == MotionEvent.ACTION_UP) {
+			mTransButton.setBackgroundResource(android.R.drawable.btn_default);
+		}
+	}
+	
+	private void judgeLanguageIdentical(){
+		
+		if(mSpinner.getSpinnerLanguage1() != mSpinner.getSpinnerLanguage2()){
+			speech.startVoiceRecognitionActivity();
+			
+		}else if(mSpinner.getSpinnerLanguage1() == mSpinner.getSpinnerLanguage2()){
+			Toast.makeText(MainActivity.this, "Please reselect detect & translated language.", Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	public String getTransLanguage() {
+		return transLanguage;
+	}
+
 }
