@@ -7,8 +7,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@+id/toplayout" >
+        android:layout_below="@+id/toplayout"
+        android:orientation="vertical" >
 
         <EditText
             android:id="@+id/InputText"
@@ -22,14 +22,12 @@
             android:id="@+id/OutputText"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" />
-
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/toplayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
-         >
+        android:layout_height="wrap_content" >
 
         <Spinner
             android:id="@+id/spinnerlanguage1"
@@ -42,31 +40,40 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
-
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/buttonlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true">
-        
-           <Button
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal" >
+
+        <Button
             android:id="@+id/btnlanguage1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Translate1" />
-           
-            <Button
+            android:background="@drawable/buttonshape"
+            android:shadowColor="#A8A8A8"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="5"
+            android:text="Translate1"
+            android:textColor="#FFFFFF" />
+
+        <Button
             android:id="@+id/btnlanguage2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Translate2" />
-        
-        
+            android:background="@drawable/buttonshape"
+            android:shadowColor="#A8A8A8"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="5"
+            android:text="Translate2"
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 
 </RelativeLayout>

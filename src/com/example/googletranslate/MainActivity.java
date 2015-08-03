@@ -77,7 +77,6 @@ public class MainActivity extends Activity{
           txtquery = matches.get(0);
          
           // Add Language Detection here , for two-way translate
-          //sendHandlerMsg(mSpinner.getDetectlanguage(), mSpinner.getTranslanguage());
           sendHandlerMsg(detectlanguage, transLanguage);
          
         }
@@ -175,10 +174,10 @@ public class MainActivity extends Activity{
 	private void translateButtonAction(int mAction, Button mTransButton){
 		
 		if (mAction == MotionEvent.ACTION_DOWN) {
-			mTransButton.setBackgroundColor(Color.BLUE);
+			mTransButton.setBackgroundResource(R.drawable.buttonshape_click);
 			judgeLanguageIdentical();
 		} else if (mAction == MotionEvent.ACTION_UP) {
-			mTransButton.setBackgroundResource(android.R.drawable.btn_default);
+			mTransButton.setBackgroundResource(R.drawable.buttonshape);
 		}
 	}
 	
