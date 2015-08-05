@@ -1,7 +1,9 @@
-package com.example.googletranslate;
+package com.dayoo.googletranslate;
 
 import java.util.ArrayList;
 import java.util.Locale;
+
+import com.dayoo.googletranslate.R;
 
 import android.speech.tts.TextToSpeech;
 import android.app.Activity;

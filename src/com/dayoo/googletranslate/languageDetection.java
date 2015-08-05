@@ -1,4 +1,4 @@
-package com.example.googletranslate;
+package com.dayoo.googletranslate;
 
 import java.io.IOException;
 

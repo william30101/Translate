@@ -1,4 +1,4 @@
-package com.example.googletranslate;
+package com.dayoo.googletranslate;
 
 import java.io.IOException;
 
@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.widget.TextView;
 
 public class googleTranslate {
@@ -35,8 +36,8 @@ public class googleTranslate {
 		
 		 new Thread(new Runnable() {
 			    public void run() {
-		
-					String yourKey = "";
+
+			    	String yourKey = "";
 					String result = null;
 					String URL  = "https://www.googleapis.com/language/translate/v2";
 					String key = "?key=" + yourKey;

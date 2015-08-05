@@ -1,6 +1,8 @@
-package com.example.googletranslate;
+package com.dayoo.googletranslate;
 
 import java.util.Locale;
+
+import com.dayoo.googletranslate.R;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,11 +10,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.Toast;
-import android.widget.AdapterView.OnItemSelectedListener;
 
 public class languageSpinner{
 
